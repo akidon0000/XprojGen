@@ -1,1 +1,1 @@
-# XcodeGen
+# XcodeProjGen

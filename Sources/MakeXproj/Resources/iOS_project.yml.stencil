@@ -1,0 +1,42 @@
+name: {{productName}}
+
+options:
+  developmentLanguage: ja
+  deploymentTarget:
+    iOS: 17.0
+        
+targets:
+  {{productName}}:
+    type: application
+    
+    platform: iOS 
+    
+    settings:
+      base:
+        DEVELOPMENT_LANGUAGE: jp
+        INFOPLIST_FILE: {{productName}}/Info.plist
+        PRODUCT_NAME: {{productName}}  # アプリ名
+        PRODUCT_BUNDLE_IDENTIFIER: com.github.akidon0000.makexproj.gen.{{productName}}
+        TARGETED_DEVICE_FAMILY: 1      # iPhone のみ
+
+    sources:
+      - {{productName}}
+      
+    dependencies:
+      - package: Rswift
+        product: RswiftLibrary
+        
+    buildToolPlugins:
+      - package: Rswift
+        plugin: RswiftGenerateInternalResources
+      - package: SwiftLint
+        plugin: SwiftLintBuildToolPlugin
+      
+packages:
+  Rswift:
+    url: https://github.com/mac-cain13/R.swift
+    from: 7.8.0
+    
+  SwiftLint:
+    url: https://github.com/SimplyDanny/SwiftLintPlugins
+    from: 0.59.1
