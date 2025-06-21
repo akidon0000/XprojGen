@@ -13,6 +13,7 @@ targets:
     
     settings:
       base:
+        SWIFT_VERSION: 6.0
         DEVELOPMENT_LANGUAGE: jp
         INFOPLIST_FILE: {{productName}}/Info.plist
         PRODUCT_NAME: {{productName}}  # アプリ名
