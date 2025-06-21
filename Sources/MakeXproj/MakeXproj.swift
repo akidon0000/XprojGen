@@ -19,8 +19,7 @@ struct MakeXproj: ParsableCommand {
             return
         }
         
-        try FileManager.default.createDirectory(atPath: productName + "/" + productName , withIntermediateDirectories: true)
-        try FileManager.default.createDirectory(atPath: productName + "/" + "Scripts/XcodeGen", withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(atPath: productName + "/" + productName  , withIntermediateDirectories: true)
         
         try copySwiftFile(templateName: "App.swift")
         try copySwiftFile(templateName: "ContentView.swift")
@@ -48,7 +47,7 @@ struct MakeXproj: ParsableCommand {
         let context = [
             "productName": productName
         ]
-        let content = try environment.renderTemplate(name: "iOS" + "_" + templateName + ".stencil", context: context)
+        let content = try environment.renderTemplate(name: templateName + ".stencil", context: context)
         let url = filePath ?? URL(fileURLWithPath: "./\(productName)/\(productName)/\(templateName)")
         logger.debug("Writing to \(url.absoluteString)")
         try content.write(to: url, atomically: true, encoding: .utf8)
