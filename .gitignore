@@ -1,13 +1,15 @@
 # Custom swift & Xcode gitignore
-# Cache & build files
+## Cache & build files
 DerivedData/
 /.build
 build/
+.swiftpm/
+.vscode
 
-# Generated file
+## Generated file
 R.generated.swift
 
-# Firebase analytics config file
+## Firebase analytics config file
 GoogleService-Info.plist
 
 
