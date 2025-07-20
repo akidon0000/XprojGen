@@ -1,6 +1,5 @@
 import ArgumentParser
 import Foundation
-import Logging
 import Stencil
 import PathKit
 import ProjectSpec
@@ -8,9 +7,17 @@ import XcodeGenKit
 
 struct Paths {
     let productName: String
+    let useFlatStructure: Bool
 
-    var root: Path { Path("./\(productName)") }
-
+    /// ディレクトリ構成がフラットであれば root、それ以外は root/productName
+    var root: Path {
+        if useFlatStructure {
+            Path(".")
+        } else {
+            Path("./\(productName)")
+        }
+    }
+    
     var sourceDir: Path { root + productName }
 
     var projectYml: Path { root + "project.yml" }
@@ -30,10 +37,19 @@ struct XprojGen: ParsableCommand {
     @Argument(help: "The name of the product for the generated Xcode project.")
     private var productName: String
     
+    @Flag(
+        name: [.customLong("flat"), .short],
+        help: """
+        Generate Xcode project with flat directory structure.
+        For example, output will be at './MyApp.xcodeproj' instead of './MyApp/MyApp.xcodeproj'.
+        """
+    )
+    private var flat: Bool = false
+    
     mutating func run() throws {
-        let paths = Paths(productName: productName)
+        let paths = Paths(productName: productName, useFlatStructure: flat)
 
-        guard !FileManager.default.fileExists(atPath: paths.root.string) else {
+        if FileManager.default.fileExists(atPath: paths.root.string) && !flat {
             Logger.error("\(productName) already exists.")
             return
         }
