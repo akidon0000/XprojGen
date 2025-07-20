@@ -1,0 +1,13 @@
+name: {{productName}}
+ 
+targets:
+  {{productName}}:
+    type: application
+    platform: iOS
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.github.akidon0000.makexproj.gen.{{productName}}
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
+    sources:
+      - {{productName}}
