@@ -6,8 +6,6 @@ import PathKit
 import ProjectSpec
 import XcodeGenKit
 
-let logger = Logger(label: "com.github.akidon0000.makexproj")
-
 @main
 struct MakeXproj: ParsableCommand {
     
@@ -30,6 +28,7 @@ struct MakeXproj: ParsableCommand {
         try copyFile(templateName: "project.yml", filePath: projectYmlPath)
         try makeXcodeProject()
         try? FileManager.default.removeItem(at: projectYmlPath)
+        print("\u{001B}[31m Success! \u{001B}[31m")
         logger.info("Creating \(productName) has been succeeded.")
     }
 
