@@ -4,10 +4,19 @@ targets:
   {{productName}}:
     type: application
     platform: iOS
+    productName: {{productName}}
     settings:
       base:
+        SWIFT_VERSION: 6.0
+        PRODUCT_NAME: $TARGET_NAME
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.github.akidon0000.makexproj.gen.{{productName}}
-        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
+        ALWAYS_SEARCH_USER_PATHS: NO
     sources:
       - {{productName}}
+settings:
+  configs:
+    Debug:
+      SWIFT_OPTIMIZATION_LEVEL: -Onone
+    Release:
+      SWIFT_OPTIMIZATION_LEVEL: -Owholemodule
