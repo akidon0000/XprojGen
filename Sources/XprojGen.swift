@@ -4,6 +4,9 @@ import Stencil
 import PathKit
 import ProjectSpec
 import XcodeGenKit
+@preconcurrency import Version
+
+let xcodeGenVersion = Version("9.4.2")
 
 struct Paths {
     let productName: String
