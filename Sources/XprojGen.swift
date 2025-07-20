@@ -27,7 +27,8 @@ struct Paths {
 @main
 struct XprojGen: ParsableCommand {
     
-    @Argument private var productName: String
+    @Argument(help: "The name of the product for the generated Xcode project.")
+    private var productName: String
     
     mutating func run() throws {
         let paths = Paths(productName: productName)
