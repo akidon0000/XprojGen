@@ -12,11 +12,33 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.github.akidon0000.makexproj.gen.{{productName}}
         ALWAYS_SEARCH_USER_PATHS: NO
+    info:
+      path: {{productName}}/Info.plist
+      properties:
+        UILaunchScreen: {}
     sources:
       - {{productName}}
+    dependencies:
+      - package: Rswift
+        product: RswiftLibrary
+    buildToolPlugins:
+      - package: Rswift
+        plugin: RswiftGenerateInternalResources
+      - package: SwiftLint
+        plugin: SwiftLintBuildToolPlugin
+
 settings:
   configs:
     Debug:
       SWIFT_OPTIMIZATION_LEVEL: -Onone
     Release:
       SWIFT_OPTIMIZATION_LEVEL: -Owholemodule
+
+packages:
+  Rswift:
+    url: https://github.com/mac-cain13/R.swift
+    from: 7.8.0
+
+  SwiftLint:
+    url: https://github.com/SimplyDanny/SwiftLintPlugins
+    from: 0.59.1
