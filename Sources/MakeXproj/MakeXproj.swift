@@ -23,7 +23,7 @@ struct MakeXproj: ParsableCommand {
         
         try copySwiftFile(templateName: "App.swift")
         try copySwiftFile(templateName: "ContentView.swift")
-        try copyFile(templateName: "Info.plist")
+//        try copyFile(templateName: "Info.plist")
 
         
         let projectYmlPath = URL(fileURLWithPath: "./\(productName)/project.yml")
