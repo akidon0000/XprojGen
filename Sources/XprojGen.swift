@@ -95,25 +95,20 @@ struct XprojGen: ParsableCommand {
 
         let specLoader = SpecLoader(version: xcodeGenVersion)
         let project = try specLoader.loadProject(path: paths.projectYml)
-        Logger.debug("📄 Loaded project.yml for '\(project.name)'")
 
         try specLoader.validateProjectDictionaryWarnings()
-        Logger.debug("✅ Project dictionary validated")
 
         try project.validateMinimumXcodeGenVersion(xcodeGenVersion)
         try project.validate()
-        Logger.debug("✅ Project structure validated")
 
         let fileWriter = FileWriter(project: project)
         try fileWriter.writePlists()
-        Logger.debug("✅ Plist files written")
         
         let projectGenerator = ProjectGenerator(project: project)
         let xcodeProject = try projectGenerator.generateXcodeProject(
             in: paths.xcodeProjDir,
             userName: userName
         )
-        Logger.debug("🛠 Generated Xcode project object")
 
         try fileWriter.writeXcodeProject(xcodeProject, to: paths.xcodeProjFile)
         Logger.success("🎉 Xcode project generated successfully at: \(paths.xcodeProjFile.string)")
