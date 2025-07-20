@@ -76,10 +76,10 @@ struct XprojGen: ParsableCommand {
 
         do {
             let content = try environment.renderTemplate(name: templateName + ".stencil", context: context)
-            Logger.info("⚙️ Writing \(templateName)...")
+            Logger.info("Copying \(templateName)...")
             try content.write(to: outputURL, atomically: true, encoding: .utf8)
         } catch {
-            Logger.error("❌ Failed to render or write template '\(templateName)': \(error)")
+            Logger.error("Failed to render or write template '\(templateName)': \(error)")
             throw error
         }
     }
@@ -87,11 +87,11 @@ struct XprojGen: ParsableCommand {
 
     private func makeXcodeProject(paths: Paths) throws {
         guard let userName = ProcessInfo.processInfo.environment["LOGNAME"] else {
-            Logger.error("❌ No user name found. Please set $LOGNAME in your environment.")
+            Logger.error("No user name found. Please set $LOGNAME in your environment.")
             return
         }
 
-        Logger.info("⚙️ Generating Xcode project...")
+        Logger.info("Generating Xcode project...")
 
         let specLoader = SpecLoader(version: xcodeGenVersion)
         let project = try specLoader.loadProject(path: paths.projectYml)
@@ -111,6 +111,6 @@ struct XprojGen: ParsableCommand {
         )
 
         try fileWriter.writeXcodeProject(xcodeProject, to: paths.xcodeProjFile)
-        Logger.success("🎉 Xcode project generated successfully at: \(paths.xcodeProjFile.string)")
+        Logger.success("Xcode project generated successfully at: \(paths.xcodeProjFile.string)")
     }
 }

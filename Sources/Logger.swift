@@ -12,7 +12,6 @@ protocol LoggerProtocol {
     static func success(_ message: String)
     static func warning(_ message: String)
     static func error(_ message: String)
-    static func debug(_ message: String)
 }
 
 struct Logger: LoggerProtocol {
@@ -21,14 +20,12 @@ struct Logger: LoggerProtocol {
     static func success(_ message: String) { log(.success, message) }
     static func warning(_ message: String) { log(.warning, message) }
     static func error(_ message: String)   { log(.error, message) }
-    static func debug(_ message: String)   { log(.debug, message) }
     
     private enum LogLevel: String {
-        case info = " [INFO] "
-        case success = " [SUCCESS] "
-        case warning = " [WARNING] "
-        case error = " [ERROR] "
-        case debug = " [DEBUG] "
+        case info = "⚙️ "
+        case success = "🎉 "
+        case warning = "⚠️ "
+        case error = "🚨 "
     }
     
     private enum ANSIColor: String {
@@ -45,14 +42,12 @@ struct Logger: LoggerProtocol {
             case .success: return .green
             case .warning: return .yellow
             case .error: return .red
-            case .debug: return .cyan
             }
         }
     }
 
     private static func log(_ level: LogLevel, _ message: String) {
         let color = ANSIColor.forLevel(level).rawValue
-        let timestamp = ISO8601DateFormatter().string(from: Date())
-        print("\(color)\(timestamp) \(level.rawValue) \(message)\(ANSIColor.reset.rawValue)")
+        print("\(color)\(level.rawValue)\(message)\(ANSIColor.reset.rawValue)")
     }
 }
