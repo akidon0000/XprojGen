@@ -9,7 +9,7 @@ XprojGenは、iOSアプリケーション用のXcodeプロジェクトを自動�
 ### 基本的な使用方法
 
 ```bash
-mint run akidon0000/XprojGen xprojgen [プロダクト名]
+mint run akidon0000/XprojGen xprojgen {プロダクト名}
 ```
 
 これにより、以下の構造でプロジェクトが生成されます：
@@ -25,9 +25,9 @@ MyApp/
 ### フラット構造での生成
 
 ```bash
-xprojgen MyApp --flat
+mint run akidon0000/XprojGen xprojgen {プロダクト名} --flat
 # または
-xprojgen MyApp -f
+mint run akidon0000/XprojGen xprojgen {プロダクト名} -f
 ```
 
 フラット構造では、現在のディレクトリに直接プロジェクトファイルが生成されます：
@@ -52,7 +52,7 @@ xprojgen MyApp -f
 
 ```swift
 @main
-struct MyAppApp: App {
+struct {プロダクト名}App: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -81,7 +81,7 @@ struct ContentView: View {
 ### プロジェクト設定
 - **プラットフォーム**: iOS
 - **Swift バージョン**: 6.0
-- **Bundle Identifier**: `com.github.akidon0000.makexproj.gen.[プロダクト名]`
+- **Bundle Identifier**: `com.github.akidon0000.makexproj.gen.{プロダクト名}`
 - **Info.plist**: 自動生成
 - **ビルド設定**: Debug/Release設定を含む
 
@@ -102,7 +102,7 @@ swift build -c release
 ### パッケージとして実行
 
 ```bash
-swift run --package-path /path/to/XprojGen xprojgen [プロダクト名]
+swift run --package-path /path/to/XprojGen xprojgen {プロダクト名}
 ```
 
 ### ビルド
