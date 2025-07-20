@@ -62,6 +62,7 @@ struct XprojGen: ParsableCommand {
         try copyFile(templateName: "App.swift", paths: paths)
         try copyFile(templateName: "ContentView.swift", paths: paths)
         try copyFile(templateName: "project.yml", filePath: paths.projectYmlURL, paths: paths)
+        try copyFile(templateName: "Info.plist", paths: paths)
 
         try makeXcodeProject(paths: paths)
         
