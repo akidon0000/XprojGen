@@ -12,6 +12,10 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         PRODUCT_BUNDLE_IDENTIFIER: com.github.akidon0000.makexproj.gen.{{productName}}
         ALWAYS_SEARCH_USER_PATHS: NO
+    info:
+      path: {{productName}}/Info.plist
+      properties:
+        UILaunchScreen: {}
     sources:
       - {{productName}}
 settings:
