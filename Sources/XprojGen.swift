@@ -6,68 +6,99 @@ import PathKit
 import ProjectSpec
 import XcodeGenKit
 
-@main
-struct MakeXproj: ParsableCommand {
-    
-    @Argument var productName: String
+struct Paths {
+    let productName: String
 
+    var root: Path { Path("./\(productName)") }
+
+    var sourceDir: Path { root + productName }
+
+    var projectYml: Path { root + "project.yml" }
+    var projectYmlURL: URL { projectYml.url }
+
+    var xcodeProjDir: Path { root }
+    var xcodeProjFile: Path { xcodeProjDir + "\(productName).xcodeproj" }
+
+    func outputFilePath(fileName: String) -> URL {
+        (sourceDir + fileName).url
+    }
+}
+
+@main
+struct XprojGen: ParsableCommand {
+    
+    @Argument private var productName: String
+    
     mutating func run() throws {
-        guard !FileManager.default.fileExists(atPath: productName) else {
-            logger.error("\(productName) exist.")
+        let paths = Paths(productName: productName)
+
+        guard !FileManager.default.fileExists(atPath: paths.root.string) else {
+            Logger.error("\(productName) already exists.")
             return
         }
-        
-        try FileManager.default.createDirectory(atPath: productName + "/" + productName  , withIntermediateDirectories: true)
-        
-        try copySwiftFile(templateName: "App.swift")
-        try copySwiftFile(templateName: "ContentView.swift")
-//        try copyFile(templateName: "Info.plist")
 
+        try FileManager.default.createDirectory(atPath: paths.sourceDir.string, withIntermediateDirectories: true)
+
+        try copyFile(templateName: "App.swift", paths: paths)
+        try copyFile(templateName: "ContentView.swift", paths: paths)
+        try copyFile(templateName: "project.yml", filePath: paths.projectYmlURL, paths: paths)
+
+        try makeXcodeProject(paths: paths)
         
-        let projectYmlPath = URL(fileURLWithPath: "./\(productName)/project.yml")
-        try copyFile(templateName: "project.yml", filePath: projectYmlPath)
-        try makeXcodeProject()
-        try? FileManager.default.removeItem(at: projectYmlPath)
-        print("\u{001B}[31m Success! \u{001B}[31m")
-        logger.info("Creating \(productName) has been succeeded.")
+        // project.ymlはXcodeGenを実行した後に削除する
+        try? FileManager.default.removeItem(at: paths.projectYmlURL)
     }
 
-    private func copySwiftFile(templateName: String, fileName: String? = nil) throws {
-        try copyFile(
-            templateName: templateName,
-            filePath: URL(fileURLWithPath: "./\(productName)/\(productName)/" + (fileName ?? templateName))
-        )
-    }
+    private func copyFile(templateName: String, fileName: String? = nil, filePath: URL? = nil, paths: Paths) throws {
+        let outputURL = filePath ?? paths.outputFilePath(fileName: fileName ?? templateName)
 
-    private func copyFile(templateName: String, filePath: URL? = nil) throws {
         let fileSystemLoader = FileSystemLoader(bundle: [Bundle.main, Bundle.module])
         let environment = Environment(loader: fileSystemLoader)
+        // ./Resources/hogehoge.stencil　の {{productName}} が置き換えられる
+        let context = ["productName": productName]
 
-        let context = [
-            "productName": productName
-        ]
-        let content = try environment.renderTemplate(name: templateName + ".stencil", context: context)
-        let url = filePath ?? URL(fileURLWithPath: "./\(productName)/\(productName)/\(templateName)")
-        logger.debug("Writing to \(url.absoluteString)")
-        try content.write(to: url, atomically: true, encoding: .utf8)
+        do {
+            let content = try environment.renderTemplate(name: templateName + ".stencil", context: context)
+            Logger.info("⚙️ Writing \(templateName)...")
+            try content.write(to: outputURL, atomically: true, encoding: .utf8)
+        } catch {
+            Logger.error("❌ Failed to render or write template '\(templateName)': \(error)")
+            throw error
+        }
     }
 
-    private func makeXcodeProject() throws {
+
+    private func makeXcodeProject(paths: Paths) throws {
         guard let userName = ProcessInfo.processInfo.environment["LOGNAME"] else {
-            logger.error("No user name, please set $LOGNAME")
+            Logger.error("❌ No user name found. Please set $LOGNAME in your environment.")
             return
         }
-        let specLoader = SpecLoader(version: xcodeGenVersion)
-        let project = try specLoader.loadProject(path: Path("./\(productName)/project.yml"))
-        try specLoader.validateProjectDictionaryWarnings()
 
-        let projectPath = "./\(project.name)/\(productName).xcodeproj"
+        Logger.info("⚙️ Generating Xcode project...")
+
+        let specLoader = SpecLoader(version: xcodeGenVersion)
+        let project = try specLoader.loadProject(path: paths.projectYml)
+        Logger.debug("📄 Loaded project.yml for '\(project.name)'")
+
+        try specLoader.validateProjectDictionaryWarnings()
+        Logger.debug("✅ Project dictionary validated")
+
         try project.validateMinimumXcodeGenVersion(xcodeGenVersion)
         try project.validate()
+        Logger.debug("✅ Project structure validated")
+
         let fileWriter = FileWriter(project: project)
         try fileWriter.writePlists()
+        Logger.debug("✅ Plist files written")
+        
         let projectGenerator = ProjectGenerator(project: project)
-        let xcodeProject = try projectGenerator.generateXcodeProject(in: Path("./\(project.name)/"), userName: userName)
-        try fileWriter.writeXcodeProject(xcodeProject, to: Path(projectPath))
+        let xcodeProject = try projectGenerator.generateXcodeProject(
+            in: paths.xcodeProjDir,
+            userName: userName
+        )
+        Logger.debug("🛠 Generated Xcode project object")
+
+        try fileWriter.writeXcodeProject(xcodeProject, to: paths.xcodeProjFile)
+        Logger.success("🎉 Xcode project generated successfully at: \(paths.xcodeProjFile.string)")
     }
 }
