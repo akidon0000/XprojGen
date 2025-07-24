@@ -9,7 +9,7 @@ XprojGenは、iOSアプリケーション用のXcodeプロジェクトを自動�
 ### 基本的な使用方法
 
 ```bash
-mint run akidon0000/XprojGen xprojgen {プロダクト名}
+mint run akidon0000/XprojGen {プロダクト名}
 ```
 
 これにより、以下の構造でプロジェクトが生成されます：
