@@ -25,9 +25,9 @@ MyApp/
 ### フラット構造での生成
 
 ```bash
-mint run akidon0000/XprojGen xprojgen {プロダクト名} --flat
+mint run akidon0000/XprojGen {プロダクト名} --flat
 # または
-mint run akidon0000/XprojGen xprojgen {プロダクト名} -f
+mint run akidon0000/XprojGen {プロダクト名} -f
 ```
 
 フラット構造では、現在のディレクトリに直接プロジェクトファイルが生成されます：
